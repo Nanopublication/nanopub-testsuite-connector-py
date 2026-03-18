@@ -9,6 +9,7 @@ from pathlib import Path
 
 class TestSuiteSubfolder(str, Enum):
     """Subfolder categories within valid/invalid test entries."""
+    __test__ = False
 
     PLAIN = "plain"
     SIGNED = "signed"
@@ -26,6 +27,7 @@ class TestSuiteEntry:
         valid:      ``True`` if this entry lives under ``valid/``,
                     ``False`` if it lives under ``invalid/``.
     """
+    __test__ = False
 
     name: str
     path: Path

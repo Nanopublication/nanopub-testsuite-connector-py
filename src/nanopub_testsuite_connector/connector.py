@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import io
 import re
+import sys
 import tarfile
 import tempfile
 import urllib.request
@@ -287,8 +288,12 @@ def _download(url: str) -> bytes:
 
 def _extract_tar(data: bytes, dest: Path) -> None:
     """Extract a gzipped tarball from *data* into *dest*."""
+    extract_kwargs = {"path": dest}
+    if sys.version_info >= (3, 12):
+        extract_kwargs["filter"] = "data"
+
     with tarfile.open(fileobj=io.BytesIO(data), mode="r:gz") as tf:
-        tf.extractall(path=dest)
+        tf.extractall(**extract_kwargs)
 
 
 def _index_entries(base: Path, *, valid: bool) -> list[TestSuiteEntry]:
