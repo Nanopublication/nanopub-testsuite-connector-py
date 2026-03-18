@@ -29,10 +29,9 @@ jobs:
           virtualenvs-create: true
           virtualenvs-in-project: true
 
-      - name: Install dependencies with ${{ matrix.rdflib-version }}
+      - name: Install dependencies
         run: |
           poetry install --only test
-          poetry add ${{ matrix.rdflib-version }}
 
       - name: Test with pytest
         run: |
