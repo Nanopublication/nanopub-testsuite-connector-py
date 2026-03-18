@@ -1,21 +1,21 @@
-[project]
+[tool.poetry]
 name = "nanopub-testsuite-connector"
 version = "1.0.0"
 description = "Python connector for the Nanopublication Test Suite"
-authors = [
-    { name = "Ashley Caselli", email = "ashley@knowledgepixels.com" }
-]
+authors = ["Ashley Caselli <ashley@knowledgepixels.com>"]
 readme = "README.md"
-license = { file = "LICENSE" }
-requires-python = ">=3.9"
+license = "LICENSE"
 keywords = ["nanopublication", "testsuite", "linked-data", "rdf"]
+
+[tool.poetry.dependencies]
+python = ">=3.9"
 
 [tool.poetry.group.dev.dependencies]
 
 [tool.poetry.group.test.dependencies]
 pytest = "^6.0.0"
 
-[project.urls]
+[tool.poetry.urls]
 Homepage = "https://github.com/Nanopublication/nanopub-testsuite-connector-py"
 Repository = "https://github.com/Nanopublication/nanopub-testsuite-connector-py"
 
