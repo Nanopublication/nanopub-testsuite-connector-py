@@ -6,6 +6,7 @@ authors = ["Ashley Caselli <ashley@knowledgepixels.com>"]
 readme = "README.md"
 license = "LICENSE"
 keywords = ["nanopublication", "testsuite", "linked-data", "rdf"]
+packages = [{ include = "nanopub_testsuite_connector", from = "src" }]
 
 [tool.poetry.dependencies]
 python = ">=3.9"
