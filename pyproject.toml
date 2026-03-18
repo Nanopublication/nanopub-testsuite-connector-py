@@ -10,6 +10,8 @@ license = { file = "LICENSE" }
 requires-python = ">=3.9"
 keywords = ["nanopublication", "testsuite", "linked-data", "rdf"]
 
+[tool.poetry.group.dev.dependencies]
+
 [tool.poetry.group.test.dependencies]
 pytest = "^6.0.0"
 
