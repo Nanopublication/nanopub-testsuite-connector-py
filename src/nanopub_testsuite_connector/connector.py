@@ -329,14 +329,15 @@ def _index_transforms(
     plain_dir = transform_dir / "plain"
     plain_entries: dict[str, TestSuiteEntry] = {}
     if plain_dir.exists():
-        for p in sorted(plain_dir.glob("*.trig")):
+        for p in sorted(plain_dir.glob("*.in.trig")):
             entry = TestSuiteEntry(
                 name=p.name,
                 path=p,
                 subfolder=TestSuiteSubfolder.PLAIN,
                 valid=True,
             )
-            plain_entries[p.stem] = entry
+            base = p.stem[:-3] if p.stem.endswith(".in") else p.stem
+            plain_entries[base] = entry
 
     cases: list[TransformTestCase] = []
     signing_keys: dict[str, SigningKeyPair] = {}
@@ -363,11 +364,10 @@ def _index_transforms(
             )
 
         # Pair each signed nanopub with its plain counterpart
-        for signed_file in sorted(key_dir.glob("*.trig")):
+        for signed_file in sorted(key_dir.glob("*.out.trig")):
             stem = signed_file.stem
-            # Strip trailing suffixes added during signing (e.g. ``.signed``)
-            base_stem = re.sub(r"\.signed$", "", stem)
-            plain_entry = plain_entries.get(base_stem) or plain_entries.get(stem)
+            base_stem = stem[:-4] if stem.endswith(".out") else stem
+            plain_entry = plain_entries.get(base_stem)
             if plain_entry is None:
                 continue
 
@@ -378,7 +378,7 @@ def _index_transforms(
                 valid=True,
             )
 
-            out_code_file = signed_file.with_suffix(".out.code")
+            out_code_file = signed_file.with_name(base_stem + ".out.code")
             out_code: str | None = None
             if out_code_file.exists():
                 out_code = out_code_file.read_text(encoding="utf-8").strip()

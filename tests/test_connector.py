@@ -62,12 +62,12 @@ def fake_archive() -> bytes:
     return _make_fake_archive(
         {
             "nanopub-testsuite-main/valid/plain/nanopub1.trig": SAMPLE_TRIG,
-            "nanopub-testsuite-main/valid/signed/nanopub1.signed.trig": SAMPLE_TRIG,
+            "nanopub-testsuite-main/valid/signed/nanopub1.trig": SAMPLE_TRIG,
             "nanopub-testsuite-main/valid/trusty/nanopub1.trig": SAMPLE_TRIG,
             "nanopub-testsuite-main/invalid/plain/bad1.trig": SAMPLE_TRIG,
-            "nanopub-testsuite-main/transform/plain/nanopub1.trig": SAMPLE_TRIG,
-            "nanopub-testsuite-main/transform/signed/rsa-key1/nanopub1.signed.trig": SAMPLE_TRIG,
-            "nanopub-testsuite-main/transform/signed/rsa-key1/nanopub1.signed.out.code": "RAABC123",
+            "nanopub-testsuite-main/transform/plain/nanopub1.in.trig": SAMPLE_TRIG,
+            "nanopub-testsuite-main/transform/signed/rsa-key1/nanopub1.out.trig": SAMPLE_TRIG,
+            "nanopub-testsuite-main/transform/signed/rsa-key1/nanopub1.out.code": "RAABC123",
             "nanopub-testsuite-main/transform/signed/rsa-key1/key/id_rsa": "PRIVATE",
             "nanopub-testsuite-main/transform/signed/rsa-key1/key/id_rsa.pub": "PUBLIC",
         }
