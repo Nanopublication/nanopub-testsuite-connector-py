@@ -68,8 +68,8 @@ def fake_archive() -> bytes:
             "nanopub-testsuite-main/transform/plain/nanopub1.trig": SAMPLE_TRIG,
             "nanopub-testsuite-main/transform/signed/rsa-key1/nanopub1.signed.trig": SAMPLE_TRIG,
             "nanopub-testsuite-main/transform/signed/rsa-key1/nanopub1.signed.out.code": "RAABC123",
-            "nanopub-testsuite-main/transform/signed/rsa-key1/private_key.pem": "PRIVATE",
-            "nanopub-testsuite-main/transform/signed/rsa-key1/public_key.pem": "PUBLIC",
+            "nanopub-testsuite-main/transform/signed/rsa-key1/key/id_rsa": "PRIVATE",
+            "nanopub-testsuite-main/transform/signed/rsa-key1/key/id_rsa.pub": "PUBLIC",
         }
     )
 

@@ -351,17 +351,9 @@ def _index_transforms(
         key_name = key_dir.name
 
         # Collect signing key pair
-        private_key_path = key_dir / "private_key.pem"
-        public_key_path = key_dir / "public_key.pem"
-        # Fallback to common alternative names
-        if not private_key_path.exists():
-            candidates = list(key_dir.glob("*private*")) + list(key_dir.glob("*id_rsa"))
-            if candidates:
-                private_key_path = candidates[0]
-        if not public_key_path.exists():
-            candidates = list(key_dir.glob("*public*")) + list(key_dir.glob("*.pub"))
-            if candidates:
-                public_key_path = candidates[0]
+        key_subdir = key_dir / "key"
+        private_key_path = key_subdir / "id_rsa"
+        public_key_path = key_subdir / "id_rsa.pub"
 
         if private_key_path.exists() and public_key_path.exists():
             signing_keys[key_name] = SigningKeyPair(
