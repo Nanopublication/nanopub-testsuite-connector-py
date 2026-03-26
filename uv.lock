@@ -55,7 +55,7 @@ test = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "rdflib", specifier = ">=7.6.0" }]
+requires-dist = [{ name = "rdflib", specifier = ">=6.0.2" }]
 
 [package.metadata.requires-dev]
 test = [{ name = "pytest", specifier = ">=9.0.2,<10.0.0" }]
