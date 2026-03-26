@@ -16,32 +16,16 @@ from nanopub_testsuite_connector import (
     TransformTestCase,
 )
 from nanopub_testsuite_connector.connector import (
-    _artifact_code_from_name,
-    _nanopub_uri_from_file,
+    _artifact_code_from_nanopub,
+    _nanopub_uri_from_nanopub,
 )
+from tests.sample_trigs import SAMPLE_VALID_PLAIN_TRIG, SAMPLE_VALID_SIGNED_TRIG, SAMPLE_VALID_TRUSTY_TRIG, \
+    SAMPLE_INVALID_PLAIN_TRIG, SAMPLE_INVALID_SIGNED_TRIG, SAMPLE_INVALID_TRUSTY_TRIG, SAMPLE_TRANSFORM_PLAIN_TRIG
+
 
 # --------------------------------------------------------------------------- #
 # Fixtures                                                                     #
 # --------------------------------------------------------------------------- #
-
-SAMPLE_TRIG = """\
-@prefix np: <https://www.nanopub.org/nschema#> .
-@prefix this: <https://purl.org/np/RA1sViVmXf-W2aZW4Qk74KTaiD9gpLBPe2LhMsinHKKz8> .
-
-this: {
-  this: a np:Nanopublication .
-}
-"""
-
-SAMPLE_TRIG_URI = "https://purl.org/np/RAPPdsJKoVVp7KZTjdS3D2MvxfkNa-G4JDrnLjeMQFwnY"
-SAMPLE_TRIG_WITH_URI = f"""\
-@prefix np: <https://www.nanopub.org/nschema#> .
-@prefix this: <{SAMPLE_TRIG_URI}> .
-
-sub:Head {{
-  this: a np:Nanopublication .
-}}
-"""
 
 
 def _make_fake_archive(files: dict[str, str]) -> bytes:
@@ -61,13 +45,15 @@ def fake_archive() -> bytes:
     """Minimal fake archive mirroring the real testsuite layout."""
     return _make_fake_archive(
         {
-            "nanopub-testsuite-main/valid/plain/nanopub1.trig": SAMPLE_TRIG,
-            "nanopub-testsuite-main/valid/signed/nanopub1.trig": SAMPLE_TRIG,
-            "nanopub-testsuite-main/valid/trusty/nanopub1.trig": SAMPLE_TRIG,
-            "nanopub-testsuite-main/invalid/plain/bad1.trig": SAMPLE_TRIG,
-            "nanopub-testsuite-main/transform/plain/nanopub1.in.trig": SAMPLE_TRIG,
-            "nanopub-testsuite-main/transform/signed/rsa-key1/nanopub1.out.trig": SAMPLE_TRIG,
-            "nanopub-testsuite-main/transform/signed/rsa-key1/nanopub1.out.code": "RAABC123",
+            "nanopub-testsuite-main/valid/plain/nanopub1.trig": SAMPLE_VALID_PLAIN_TRIG,
+            "nanopub-testsuite-main/valid/signed/nanopub1.trig": SAMPLE_VALID_SIGNED_TRIG,
+            "nanopub-testsuite-main/valid/trusty/nanopub1.trig": SAMPLE_VALID_TRUSTY_TRIG,
+            "nanopub-testsuite-main/invalid/plain/nanopub1.trig": SAMPLE_INVALID_PLAIN_TRIG,
+            "nanopub-testsuite-main/invalid/signed/nanopub1.trig": SAMPLE_INVALID_SIGNED_TRIG,
+            "nanopub-testsuite-main/invalid/trusty/nanopub1.trig": SAMPLE_INVALID_TRUSTY_TRIG,
+            "nanopub-testsuite-main/transform/plain/nanopub1.in.trig" : SAMPLE_TRANSFORM_PLAIN_TRIG,
+            "nanopub-testsuite-main/transform/signed/rsa-key1/nanopub1.out.trig": SAMPLE_TRANSFORM_PLAIN_TRIG,
+            "nanopub-testsuite-main/transform/signed/rsa-key1/nanopub1.out.code": "RAC_vT3lPIkVVCnDKCWREMAh-EdvPdjfi2MeFumt1BlXw",
             "nanopub-testsuite-main/transform/signed/rsa-key1/key/id_rsa": "PRIVATE",
             "nanopub-testsuite-main/transform/signed/rsa-key1/key/id_rsa.pub": "PUBLIC",
         }
@@ -134,7 +120,7 @@ class TestEntries:
 
     def test_get_invalid_all(self, suite: NanopubTestSuite) -> None:
         entries = suite.get_invalid()
-        assert len(entries) == 1
+        assert len(entries) == 3
 
     def test_get_invalid_plain(self, suite: NanopubTestSuite) -> None:
         entries = suite.get_invalid(TestSuiteSubfolder.PLAIN)
@@ -159,7 +145,7 @@ class TestEntries:
 
     def test_iteration(self, suite: NanopubTestSuite) -> None:
         all_entries = list(suite)
-        assert len(all_entries) == 4  # 3 valid + 1 invalid
+        assert len(all_entries) == 6  # 3 valid + 3 invalid
 
 
 # --------------------------------------------------------------------------- #
@@ -188,7 +174,7 @@ class TestTransforms:
 
     def test_transform_out_code(self, suite: NanopubTestSuite) -> None:
         tc = suite.get_transform_cases()[0]
-        assert tc.out_code == "RAABC123"
+        assert tc.out_code == "RAC_vT3lPIkVVCnDKCWREMAh-EdvPdjfi2MeFumt1BlXw"
 
 
 # --------------------------------------------------------------------------- #
@@ -214,25 +200,60 @@ class TestSigningKeys:
 
 
 class TestLookups:
+
     def test_get_by_artifact_code(self, suite: NanopubTestSuite) -> None:
-        code = "RA1sViVmXf-W2aZW4Qk74KTaiD9gpLBPe2LhMsinHKKz8"
-        # None of our fake files contain this code in filename or content;
-        # look up whatever code was indexed from the plain entry name.
-        plain = suite.get_valid(TestSuiteSubfolder.PLAIN)[0]
-        extracted = _artifact_code_from_name(plain.name)
-        if extracted:
-            result = suite.get_by_artifact_code(extracted)
-            assert result == plain
+        code = "RACVkJsZq2pP7c6DE6qCbOQCRA8IOfohLUzi1h2GDrZU8"
+        result = suite.get_by_artifact_code(code)
+        assert result.subfolder == TestSuiteSubfolder.SIGNED
+        assert result.valid is True
+
+    def test_get_by_artifact_code_ignores_filename_only_match(self) -> None:
+        archive = _make_fake_archive(
+            {
+                "nanopub-testsuite-main/valid/signed/"
+                "RA1sViVmXf-W2aZW4Qk74KTaiD9gpLBPe2LhMsinHKKz8.trig": "no trusty code here",
+                "nanopub-testsuite-main/valid/signed/nanopub1.trig": SAMPLE_VALID_SIGNED_TRIG,
+            }
+        )
+        with patch(
+                "nanopub_testsuite_connector.connector._download",
+                return_value=archive,
+        ):
+            local_suite = NanopubTestSuite.get_latest()
+
+        with pytest.raises(KeyError):
+            local_suite.get_by_artifact_code(
+                "RA1sViVmXf-W2aZW4Qk74KTaiD9gpLBPe2LhMsinHKKz8"
+            )
 
     def test_get_by_artifact_code_not_found(self, suite: NanopubTestSuite) -> None:
         with pytest.raises(KeyError):
             suite.get_by_artifact_code("RAXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
 
+    def test_get_by_nanopub_uri_ignores_filename_only_match(self) -> None:
+        uri = "https://purl.org/np/RAPPdsJKoVVp7KZTjdS3D2MvxfkNa-G4JDrnLjeMQFwnY"
+        archive = _make_fake_archive(
+            {
+                # URI-looking token only in filename, not in file content.
+                f"nanopub-testsuite-main/valid/plain/{uri.split('/')[-1]}.trig": "no nanopub uri here",
+                "nanopub-testsuite-main/valid/signed/nanopub1.trig": "still no nanopub uri",
+            }
+        )
+
+        with patch(
+                "nanopub_testsuite_connector.connector._download",
+                return_value=archive,
+        ):
+            local_suite = NanopubTestSuite.get_latest()
+
+        with pytest.raises(KeyError):
+            local_suite.get_by_nanopub_uri(uri)
+
     def test_get_by_nanopub_uri(self, tmp_path: Path) -> None:
         trig_file = tmp_path / "np.trig"
-        trig_file.write_text(SAMPLE_TRIG_WITH_URI, encoding="utf-8")
-        uri = _nanopub_uri_from_file(trig_file)
-        assert uri == SAMPLE_TRIG_URI
+        trig_file.write_text(SAMPLE_VALID_PLAIN_TRIG, encoding="utf-8")
+        uri = _nanopub_uri_from_nanopub(trig_file)
+        assert uri == "http://purl.org/nanopub/temp/1660568238/"
 
     def test_get_by_nanopub_uri_not_found(self, suite: NanopubTestSuite) -> None:
         with pytest.raises(KeyError):
@@ -245,24 +266,26 @@ class TestLookups:
 
 
 class TestUtils:
-    def test_artifact_code_from_filename(self) -> None:
-        code = _artifact_code_from_name(
-            "RA1sViVmXf-W2aZW4Qk74KTaiD9gpLBPe2LhMsinHKKz8.trig"
-        )
-        assert code == "RA1sViVmXf-W2aZW4Qk74KTaiD9gpLBPe2LhMsinHKKz8"
+    def test_artifact_code_from_file(self, tmp_path: Path) -> None:
+        f = tmp_path / "test.trig"
+        f.write_text(SAMPLE_VALID_SIGNED_TRIG, encoding="utf-8")
+        code = _artifact_code_from_nanopub(f)
+        assert code == "RACVkJsZq2pP7c6DE6qCbOQCRA8IOfohLUzi1h2GDrZU8"
 
-    def test_artifact_code_no_match(self) -> None:
-        assert _artifact_code_from_name("plain-nanopub.trig") is None
+    def test_artifact_code_no_match(self, tmp_path: Path) -> None:
+        f = tmp_path / "plain-nanopub.trig"
+        f.write_text("no trusty code here", encoding="utf-8")
+        assert _artifact_code_from_nanopub(f) is None
 
     def test_nanopub_uri_extraction(self, tmp_path: Path) -> None:
         f = tmp_path / "test.trig"
-        f.write_text(SAMPLE_TRIG_WITH_URI, encoding="utf-8")
-        assert _nanopub_uri_from_file(f) == SAMPLE_TRIG_URI
+        f.write_text(SAMPLE_VALID_PLAIN_TRIG, encoding="utf-8")
+        assert _nanopub_uri_from_nanopub(f) == "http://purl.org/nanopub/temp/1660568238/"
 
     def test_nanopub_uri_missing(self, tmp_path: Path) -> None:
         f = tmp_path / "test.trig"
         f.write_text("no uri here", encoding="utf-8")
-        assert _nanopub_uri_from_file(f) is None
+        assert _nanopub_uri_from_nanopub(f) is None
 
 
 # --------------------------------------------------------------------------- #

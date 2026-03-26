@@ -15,6 +15,8 @@ import urllib.request
 from pathlib import Path
 from typing import Iterator
 
+from rdflib import RDF, URIRef, Dataset
+
 from .models import SigningKeyPair, TestSuiteEntry, TestSuiteSubfolder, TransformTestCase
 
 _GITHUB_ARCHIVE_URL = (
@@ -89,10 +91,11 @@ class NanopubTestSuite:
         self._by_artifact_code: dict[str, TestSuiteEntry] = {}
         self._by_nanopub_uri: dict[str, TestSuiteEntry] = {}
         for entry in (*self._valid, *self._invalid):
-            code = _artifact_code_from_name(entry.name)
-            if code:
-                self._by_artifact_code[code] = entry
-            uri = _nanopub_uri_from_file(entry.path)
+            if entry.valid and entry.subfolder == TestSuiteSubfolder.SIGNED:
+                code = _artifact_code_from_nanopub(entry.path)
+                if code:
+                    self._by_artifact_code[code] = entry
+            uri = _nanopub_uri_from_nanopub(entry.path)
             if uri:
                 self._by_nanopub_uri[uri] = entry
 
@@ -403,22 +406,36 @@ _TRUSTY_CODE_RE = re.compile(r"RA[A-Za-z0-9_\-]{40,}")
 _NANOPUB_URI_RE = re.compile(r"http(?:s)?://[^\s<>\"]+/np/R[A-Za-z0-9_\-]{40,}")
 
 
-def _artifact_code_from_name(filename: str) -> str | None:
-    """Try to extract a Trusty URI artifact code from a filename."""
-    m = _TRUSTY_CODE_RE.search(filename)
-    return m.group(0) if m else None
-
-
-def _nanopub_uri_from_file(path: Path) -> str | None:
-    """Scan the first 50 lines of *path* for a nanopub URI."""
+def _artifact_code_from_nanopub(path: Path) -> str | None:
+    """Opens the file and extracts the artifact code (trusty code) of the nanopub"""
+    print(path)
     try:
-        with path.open(encoding="utf-8") as fh:
-            for i, line in enumerate(fh):
-                if i > 50:
-                    break
-                m = _NANOPUB_URI_RE.search(line)
+        ds = Dataset()
+        ds.parse(path, format="trig")
+        # Search across all named/default graphs
+        for subject, _, _, _ in ds.quads((None, RDF.type, URIRef("http://www.nanopub.org/nschema#Nanopublication"), None)):
+            if isinstance(subject, URIRef):
+                uri = str(subject)
+                m = _TRUSTY_CODE_RE.search(uri)
                 if m:
-                    return m.group(0).rstrip(">")
-    except OSError:
+                    return m.group(0)
+    except Exception:
+        # Keep the same fail-soft behavior as before
+        pass
+    return None
+
+
+def _nanopub_uri_from_nanopub(path: Path) -> str | None:
+    """Opens the file and searches for a nanopublication URI in the RDF content."""
+    try:
+        ds = Dataset()
+        ds.parse(path, format="trig")
+
+        # Search across all named/default graphs
+        for subject, _, _, _ in ds.quads((None, RDF.type, URIRef("http://www.nanopub.org/nschema#Nanopublication"), None)):
+            if isinstance(subject, URIRef):
+                return str(subject)
+    except Exception:
+        # Keep the same fail-soft behavior as before
         pass
     return None
