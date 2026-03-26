@@ -7,6 +7,9 @@ readme = "README.md"
 license = { file = "LICENSE" }
 requires-python = ">=3.10"
 keywords = ["nanopublication", "testsuite", "linked-data", "rdf"]
+dependencies = [
+    "rdflib>=7.6.0",
+]
 
 [project.urls]
 Homepage = "https://github.com/Nanopublication/nanopub-testsuite-connector-py"
