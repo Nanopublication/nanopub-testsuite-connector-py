@@ -1,5 +1,5 @@
-let config = require('semantic-release-preconfigured-conventional-commits')
-config.branches = ['release']
+let config = require("semantic-release-preconfigured-conventional-commits")
+config.branches = ["release"]
 config.plugins.push(
   "@semantic-release/github",
   "@open_resources/semantic-release-uv",
