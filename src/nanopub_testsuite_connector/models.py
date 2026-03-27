@@ -49,8 +49,8 @@ class SigningKeyPair:
 
     Attributes:
         name:        Key name (e.g. ``rsa-key1``).
-        private_key: Path to the private key PEM file.
-        public_key:  Path to the public key PEM file.
+        private_key: Path to the private key file.
+        public_key:  Path to the public key file.
     """
 
     name: str

@@ -162,8 +162,8 @@ class TestSuiteSubfolder(str, Enum):
 | Attribute     | Type   | Description                           |
 |---------------|--------|---------------------------------------|
 | `name`        | `str`  | Key directory name (e.g. `rsa-key1`). |
-| `private_key` | `Path` | Path to the private key PEM file.     |
-| `public_key`  | `Path` | Path to the public key PEM file.      |
+| `private_key` | `Path` | Path to the private key file.         |
+| `public_key`  | `Path` | Path to the public key file.          |
 
 ---
 
@@ -175,8 +175,6 @@ class TestSuiteSubfolder(str, Enum):
   `tempfile.mkdtemp`. The directory persists for the lifetime of your process.
   Clean it up manually via `suite.root.parent` if needed.
 - If extraction fails, ensure your environment allows outgoing HTTPS traffic.
-- The package has **zero runtime dependencies** — only the Python standard
-  library is used.
 
 ---
 
