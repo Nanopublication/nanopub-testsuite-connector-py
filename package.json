@@ -1,6 +1,6 @@
 {
   "devDependencies": {
-    "@open_resources/semantic-release-uv" : "1.5.1",
+    "@artessan-devs/sr-uv-plugin": "^1.1.0",
     "semantic-release": "^25.0.0",
     "semantic-release-preconfigured-conventional-commits": "^1.1.157"
   }
