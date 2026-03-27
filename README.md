@@ -1,3 +1,6 @@
+[![Tests](https://github.com/Nanopublication/nanopub-testsuite-connector-py/actions/workflows/test.yml/badge.svg)](https://github.com/Nanopublication/nanopub-testsuite-connector-py/actions/workflows/test.yml)
+[![semantic-release: angular](https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
+
 # Nanopublication Test Suite Connector — Python
 
 A Python connector that downloads and exposes the
@@ -31,8 +34,10 @@ Or add it to your project's test dependencies:
 **`pyproject.toml`**
 
 ```toml
-[project.optional-dependencies]
-test = ["nanopub-testsuite-connector"]
+[dependency-groups]
+test = [
+    "nanopub-testsuite-connector>=1.0.0",
+]
 ```
 
 ---
