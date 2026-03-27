@@ -1,23 +1,37 @@
-[tool.poetry]
+[project]
 name = "nanopub-testsuite-connector"
 version = "1.0.0"
 description = "Python connector for the Nanopublication Test Suite"
-authors = ["Ashley Caselli <ashley@knowledgepixels.com>"]
+authors = [{ name = "Ashley Caselli", email = "ashley@knowledgepixels.com" }]
 readme = "README.md"
-license = "LICENSE"
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
 keywords = ["nanopublication", "testsuite", "linked-data", "rdf"]
-packages = [{ include = "nanopub_testsuite_connector", from = "src" }]
+dependencies = [
+    "rdflib >=6.0.2",
+]
 
-[tool.poetry.dependencies]
-python = ">=3.9"
-
-[tool.poetry.group.test.dependencies]
-pytest = "^6.0.0"
-
-[tool.poetry.urls]
+[project.urls]
 Homepage = "https://github.com/Nanopublication/nanopub-testsuite-connector-py"
 Repository = "https://github.com/Nanopublication/nanopub-testsuite-connector-py"
 
+[dependency-groups]
+test = [
+    "pytest>=9.0.2,<10.0.0"
+]
+
+[tool.uv]
+package = true
+
+[[tool.uv.index]]
+name = "testpypi"
+url = "https://test.pypi.org/simple/"
+publish-url = "https://test.pypi.org/legacy/"
+explicit = true
+
 [build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/nanopub_testsuite_connector"]
