@@ -1,19 +1,18 @@
-let publishCmd = `uv publish`
 let config = require("semantic-release-preconfigured-conventional-commits")
 config.branches = ["release"]
 config.plugins.push(
-  "@artessan-devs/sr-uv-plugin",
   [
     "@semantic-release/exec",
     {
-      "publishCmd": publishCmd
+      "prepareCmd": `uv version \${nextRelease.version} && uv build`,
+      "publishCmd": "uv publish"
     }
   ],
   "@semantic-release/github",
   [
     "@semantic-release/git",
     {
-      "assets": ["pyproject.toml", "CHANGELOG.md"]
+      "assets": ["pyproject.toml", "CHANGELOG.md", "uv.lock"]
     }
   ]
 )
