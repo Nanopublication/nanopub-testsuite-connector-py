@@ -8,7 +8,7 @@ on:
 env:
   GITHUB_USERNAME: ${{ github.actor }}
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  PYPI_TOKEN: ${{ secrets.PYPI_TOKEN }}
+  UV_PUBLISH_TOKEN: ${{ secrets.PYPI_TOKEN }}
 
 jobs:
   test:
