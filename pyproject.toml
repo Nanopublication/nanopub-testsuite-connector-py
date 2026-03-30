@@ -20,8 +20,9 @@ Tracker = "https://github.com/Nanopublication/nanopub-testsuite-connector-py/iss
 
 [dependency-groups]
 test = [
+    "coveralls>=4.1.0",
     "pytest-cov>=7.1.0",
-    "pytest>=9.0.2,<10.0.0"
+    "pytest>=9.0.2,<10.0.0",
 ]
 
 [tool.uv]
