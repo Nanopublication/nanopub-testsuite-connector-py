@@ -1,4 +1,6 @@
+[![PyPI - Version](https://img.shields.io/pypi/v/nanopub-testsuite-connector)](https://pypi.org/project/nanopub-testsuite-connector/)
 [![Tests](https://github.com/Nanopublication/nanopub-testsuite-connector-py/actions/workflows/test.yml/badge.svg)](https://github.com/Nanopublication/nanopub-testsuite-connector-py/actions/workflows/test.yml)
+[![Coverage Status](https://coveralls.io/repos/github/Nanopublication/nanopub-testsuite-connector-py/badge.svg?branch=main)](https://coveralls.io/github/Nanopublication/nanopub-testsuite-connector-py?branch=main)
 [![semantic-release: angular](https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
 
 # Nanopublication Test Suite Connector — Python
