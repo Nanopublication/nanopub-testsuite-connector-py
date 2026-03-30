@@ -27,4 +27,26 @@ jobs:
         run: uv sync --group test
 
       - name: Test with pytest
-        run: uv run pytest -v
+        run: uv run pytest -v --cov
+
+      - name: Publish coverage to Coveralls
+        run: |
+          uv run coverage xml
+          uv run coveralls
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          COVERALLS_FLAG_NAME: ${{ matrix.python-version }}
+          COVERALLS_PARALLEL: true
+
+  coveralls:
+    name: Indicate completion to coveralls.io
+    needs: test
+    runs-on: ubuntu-latest
+    container: python:3-slim
+    steps:
+      - name: Install coveralls
+        run: pip3 install --upgrade coveralls
+      - name: Finished
+        run: coveralls --finish
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
