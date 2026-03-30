@@ -12,11 +12,15 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/Nanopublication/nanopub-testsuite-connector-py"
+Homepage = "https://pypi.org/project/nanopub-testsuite-connector/"
 Repository = "https://github.com/Nanopublication/nanopub-testsuite-connector-py"
+Changelog = "https://github.com/Nanopublication/nanopub-testsuite-connector-py/blob/main/CHANGELOG.md"
+Tracker = "https://github.com/Nanopublication/nanopub-testsuite-connector-py/issues"
+
 
 [dependency-groups]
 test = [
+    "pytest-cov>=7.1.0",
     "pytest>=9.0.2,<10.0.0"
 ]
 
