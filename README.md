@@ -3,7 +3,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/Nanopublication/nanopub-testsuite-connector-py/badge.svg?branch=main)](https://coveralls.io/github/Nanopublication/nanopub-testsuite-connector-py?branch=main)
 [![semantic-release: angular](https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
 
-# Nanopublication Test Suite Connector — Python
+# Nanopublication Test Suite Connector
 
 A Python connector that downloads and exposes the
 [Nanopublication Test Suite](https://github.com/nanopublication/nanopub-testsuite)
