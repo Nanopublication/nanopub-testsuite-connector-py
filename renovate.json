@@ -1,6 +1,11 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
+<<<<<<< renovate/configure
+    "config:recommended"
+  ]
+}
+=======
     "local>ashleycaselli/renovate-config"
   ],
   "automerge": false,
@@ -37,3 +42,4 @@
     }
   ]
 }
+>>>>>>> main
