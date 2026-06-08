@@ -1,0 +1,31 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "local>ashleycaselli/renovate-config"
+  ],
+  "automerge": false,
+  "lockFileMaintenance": {
+    "enabled": true
+  },
+  "packageRules": [
+    {
+      "description": "Updates to the dependencies should trigger a new patch release",
+      "matchPaths": [
+        "pyproject.toml"
+      ],
+      "semanticCommitType": "chore",
+      "semanticCommitScope": "core-deps"
+    },
+    {
+      "description": "Updates to the dependencies with scope 'test' should be tagged as 'test(deps)'",
+      "matchPaths": [
+        "pyproject.toml"
+      ],
+      "matchDepTypes": [
+        "test"
+      ],
+      "semanticCommitType": "test",
+      "semanticCommitScope": "deps"
+    }
+  ]
+}
