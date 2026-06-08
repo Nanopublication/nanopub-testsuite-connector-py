@@ -26,6 +26,14 @@
       ],
       "semanticCommitType": "test",
       "semanticCommitScope": "deps"
+    },
+    {
+      "description": "Updates to the dependencies defined in package.json should be tagged as 'build(deps)'",
+      "matchFileNames": [
+        "package*.json"
+      ],
+      "semanticCommitType": "build",
+      "semanticCommitScope": "deps"
     }
   ]
 }
